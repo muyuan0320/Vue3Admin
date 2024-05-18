@@ -6,7 +6,11 @@ export  const userStore =defineStore('user',()=>{
     const roles=ref<string[]>([])
     const token =ref<string>('')
     const userName =ref<string>('')
-    return {roles,token,userName}
+
+    const getToken =()=>{
+        return token.value
+    }
+    return {roles,token,userName,getToken}
 })
 export  function useUserStoreHook(){
 return userStore(store)
