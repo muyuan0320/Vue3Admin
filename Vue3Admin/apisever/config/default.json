@@ -1,0 +1,14 @@
+
+{
+  "dbConfig": {
+    "host": "localhost",
+    "user": "root",
+    "password": "yanmo123",
+    "database": "vue3Admin"
+  },
+  "JWTConfig": {
+    "secret": "vueAdmin3",
+    "expiresIn": "1h",
+    "reFlushExpiresIn": "8h"
+  }
+}

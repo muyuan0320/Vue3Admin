@@ -6,7 +6,10 @@ export const constantRoutes :RouteRecordRaw[] =[
     path:'/redirect',
     redirect:'/',
 
-  },
+  },{
+  path:'/login',
+    component: ()=>import('@/views/login/login.vue')
+  }
 
 
 ]
@@ -19,6 +22,7 @@ export  const dynamicRoutes :RouteRecordRaw[] =[
       roles:['admin']
     },
 
+
   },
 
 ]
@@ -27,3 +31,4 @@ const router = createRouter({
   routes:constantRoutes,
 })
 
+export default router
