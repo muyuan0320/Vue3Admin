@@ -1,9 +1,12 @@
 import axios, {type AxiosInstance, type AxiosRequestConfig} from 'axios'
 import {getReFlushToken, getToken, setToken} from "@/utils/cache/cookies";
-
 import {merge} from "lodash-es";
 import {useUserStoreHook} from "@/stores/modules/users";
-
+import router from "@/router";
+/**
+ * @description 退出登录 并删除token
+ * @author MuYuan
+ */
 const logout = () => {
     return useUserStoreHook().logout()
 }
@@ -27,11 +30,10 @@ const createService = () => {
                         method: error.config.method, url: error.config.url, data: error.config.data
                     })
                     return Promise.resolve(result)
-
                 // 其他错误状态码处理
                 default:
-
                     logout()
+                   await router.replace('/login')
             }
             return Promise.reject(error);
         } else if (error.request) {
@@ -47,8 +49,6 @@ const createService = () => {
         }
     });
     return app
-
-
 }
 /**
  * @description 创建请求实例 返回一个axios请求实例

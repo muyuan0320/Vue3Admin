@@ -1,48 +1,65 @@
 <script lang="ts" setup>
-import { login } from './serve/login/login';
+
 import {useUserStoreHook} from "@/stores/modules/users";
-import {ref} from "vue";
-import {request} from "@/utils/service";
 
-const data=ref<any>([{}])
-
-Promise.all([
-  request({
-    method:'get',
-    url:'',}).then((res)=>{
-    console.log(res)
-  }),
-  // login({
-  //   username:'test',
-  //   password:'yanmo123'
-  // }).then(()=>{
-  //
-  // })
-])
-const userStore=useUserStoreHook()
-data.value=[{
-    username:userStore.username,
-    token:userStore.token,
-    roles:userStore.roles,
-  }]
-
-
-
-
-
-console.log(data.value)
+const userStore = useUserStoreHook();
 </script>
 <template>
-  <div>
- <el-table :data=data>
-   <el-table-column label="姓名" prop="username"></el-table-column>
-   <el-table-column label="token" prop="token"></el-table-column>
-   <el-table-column label="roles"  prop="roles"></el-table-column>
- </el-table>
+<el-menu class="menu"
+router
+         background-color="#29436e">
+<el-menu-item class="logoBox">
+  <el-image class="logo" src="./favicon.ico"></el-image>
+</el-menu-item>
+  <div class="itemGroup">
+  <el-menu-item v-if="userStore.roles?.length">
+  </el-menu-item>
+    <el-menu-item v-else index="/login" class="loginBox">
+    <div class="loginText">登录</div>
+    </el-menu-item>
+  </div>
+</el-menu>
+  <div class="view">
+    <router-view></router-view>
   </div>
 </template>
 
 
 <style lang="scss" scoped>
+.loginText{
+  border: white;
+  color: #ccc;
+  font-size: 2vh;
+}
+.loginBox{
+  background-color: #c7af9a;
+  border-top-left-radius: 0;
+  border-top-right-radius: 5px ;
+  width: 10vw;
+  height: 10vh;
+  align-items: center;
+  justify-content: center;
+}
+.itemGroup{
+  display: flex;
+  float: right;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+}
+.menu{
+  display: flex;
+  z-index: 100;
+  height: 10vh;
 
+}
+.logoBox{
+
+  height: 10vh;
+}
+.logo {  display: flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+}
 </style>

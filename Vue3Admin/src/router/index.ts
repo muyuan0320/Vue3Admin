@@ -10,8 +10,6 @@ export const constantRoutes :RouteRecordRaw[] =[
   path:'/login',
     component: ()=>import('@/views/login/login.vue')
   }
-
-
 ]
 export  const dynamicRoutes :RouteRecordRaw[] =[
   { component:HelloWorld,

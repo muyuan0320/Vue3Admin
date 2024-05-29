@@ -67,8 +67,9 @@ const regist=(data)=>{
 const findPasswordByUsername= async (data)=>{
 
 const password = await  select('password','user',` username = '${data.username}'`)
-
+if (password.results[0]?.password)
     return password.results[0].password
+    else return false
 }
 const findPermissionByUsername= async (data)=>{
 

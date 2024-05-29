@@ -4,7 +4,7 @@ import store from "@/stores";
 import {getToken, removeReFlushToken, removeToken} from "@/utils/cache/cookies";
 
 export  const userStore =defineStore('user',()=>{
-    const roles=ref<string[]>([])
+    const roles=ref<string[]|undefined>([])
     const token =ref<string>(getToken() ||'')
     const username =ref<string>('')
     const getUserInfo = async ()=>{
