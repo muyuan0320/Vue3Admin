@@ -8,7 +8,7 @@ onMounted(()=>{
  const user=useUserStoreHook()
  if (user.token){
    ElMessage.warning('您已处于登录状态')
-   route.push('/')
+   route.replace('/')
  }
 })
 const loginForm=ref<LoginAttribute>({

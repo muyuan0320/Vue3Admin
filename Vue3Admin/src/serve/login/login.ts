@@ -3,7 +3,8 @@ import {setPermissions, setReFlushToken, setToken} from "@/utils/cache/cookies";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
-
+import {useRouter} from "vue-router";
+const router = useRouter()
 const login = async (data: LoginAttribute) => {
   await  request({
         url: "login", method: "post", data: data
@@ -18,6 +19,8 @@ const login = async (data: LoginAttribute) => {
 
         user.username=data.username
        ElMessage.success(res.data.msg)
+        router.replace('/')
+
         } else {
        ElMessage.error(res.data.msg)
 
