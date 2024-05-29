@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const login = async (data) =>{
     let flag;
    const res= await mysql.findPasswordByUsername(data)
+    if (!res) return false
     flag = await bcrypt.compare(data.password, res)
     const payloads =  await  mysql.selectUser(data.username)
 
