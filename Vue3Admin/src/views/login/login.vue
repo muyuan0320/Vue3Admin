@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import {login} from '@/serve/login/login'
-import {reactive, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
+import {useRouter} from "vue-router";
+import {useUserStoreHook} from "@/stores/modules/users";
+import {ElMessage} from "element-plus";
+onMounted(()=>{
+ const user=useUserStoreHook()
+ if (user.token){
+   ElMessage.warning('您已处于登录状态')
+   route.replace('/')
+ }
+})
 const loginForm=ref<LoginAttribute>({
   username:'',
   password:'',
@@ -8,6 +18,7 @@ const loginForm=ref<LoginAttribute>({
 const rules=ref([
 
 ])
+const route = useRouter()
 </script>
 
 <template>
@@ -26,8 +37,10 @@ const rules=ref([
             <el-input type="password" show-password v-model="loginForm.password" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button  type="primary" native-type="submit">登录</el-button>
+            <el-text class="forgotText" @click="route.push('/forgot')">忘记密码</el-text>
           </el-form-item>
+            <el-button  type="primary" native-type="submit">登录</el-button>
+
 
         </el-form>
       </div>
@@ -41,7 +54,6 @@ const rules=ref([
 .login{
   display: flex;
   height: 100%;
-
 }
 .img{
   flex:0 0 65%;
@@ -57,9 +69,9 @@ const rules=ref([
 .loginBorder{
   position: absolute;
   left: 18%;
-  top: 30%;
+  top: 20%;
   width: 70%;
-  height: 30vh;
+  height: 40%;
   background: rgba(101, 216, 216, 0.9);
   border-radius: 15px;
 }
@@ -70,6 +82,35 @@ const rules=ref([
 .loginForm{
   margin: 10%;
 }
-
+.forgotText{
+  text-align: right;
+  flex-grow: 1;
+}
+@media screen  and (max-width: 768px){
+  .img{
+    flex:0 0 100%;
+    height: 90vh;
+    aspect-ratio: 1/1;
+  }
+  .loginBox{
+    position: absolute;
+    z-index: 50;
+    left: 10%;
+    width: 80%;
+    background: #c7def1;
+    top: 25%;
+    border-radius: 15px;
+    height: 50vh;
+  }
+  .loginForm{
+    margin: 5%;
+  }
+  .loginBorder{
+    position: absolute;
+    left: 15%;
+    top: 15%;
+    height: 70%;
+  }
+}
 
 </style>

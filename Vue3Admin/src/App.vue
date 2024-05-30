@@ -12,8 +12,18 @@ router
   <el-image class="logo" src="./favicon.ico"></el-image>
 </el-menu-item>
   <div class="itemGroup">
-  <el-menu-item v-if="userStore.roles?.length">
-  </el-menu-item>
+
+    <el-sub-menu v-if="userStore.roles?.length" class="subMenu">
+      <template #title >
+        <el-avatar class="avatar"></el-avatar>
+      </template>
+      <el-menu-item v-permission="['Admin']" index="/admin" >
+        <div class="font">
+        管理界面
+        </div>
+      </el-menu-item>
+    </el-sub-menu>
+
     <el-menu-item v-else index="/login" class="loginBox">
     <div class="loginText">登录</div>
     </el-menu-item>
@@ -26,6 +36,15 @@ router
 
 
 <style lang="scss" scoped>
+.subMenu{
+  margin-top: 3vh;
+  height: 10vh;
+  border: #c7def1;
+}
+.font{
+  color: #999;
+  text-align: center;
+}
 .loginText{
   border: white;
   color: #ccc;
@@ -62,4 +81,11 @@ router
   width: auto;
   height: auto;
 }
+
+.avatar{
+  position: absolute;
+  transition: none;
+  z-index: 2;
+}
+
 </style>
