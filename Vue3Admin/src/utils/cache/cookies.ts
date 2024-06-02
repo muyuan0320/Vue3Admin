@@ -9,6 +9,9 @@ export const removeToken=()=>{
 export const removeReFlushToken=()=>{
     return Cookies.remove(CacheKey.ReFlushTOKEN)
 }
+export const removePermission=()=>{
+    return Cookies.remove(CacheKey.PERMISSION)
+}
 export const setToken=(token:string)=>{
     return Cookies.set(CacheKey.TOKEN,token)
 }
