@@ -13,14 +13,19 @@ router
 </el-menu-item>
   <div class="itemGroup">
 
-    <el-sub-menu v-if="userStore.roles?.length" class="subMenu">
+    <el-sub-menu v-if="userStore.roles.length"  class="subMenu" >
       <template #title >
         <el-avatar class="avatar"></el-avatar>
       </template>
-      <el-menu-item v-permission="['Admin']" index="/admin" >
+      <el-menu-item v-permission="['Admin']" >
+
+
         <div class="font">
         管理界面
         </div>
+      </el-menu-item>
+      <el-menu-item @click="userStore.logout" index="/login">
+        <div class="font">退出登录</div>
       </el-menu-item>
     </el-sub-menu>
 
