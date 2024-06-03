@@ -14,7 +14,7 @@ onMounted(()=>{
 })
 
 const repasswordRules=(rule:any, value:string, callback:any)=>{
-  const passwordReg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@$!\.%*?&]{8,}$/
+  const passwordReg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%\.^&+=!])[A-Za-z\d.@$!%*?&]{8,}$/
   if (!passwordReg.test(value)){
 
     callback(new Error('密码必须包含大小写字母、数字和特殊字符，长度在8-20之间'))
