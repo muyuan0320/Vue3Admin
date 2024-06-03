@@ -5,6 +5,7 @@ import {useRouter} from "vue-router";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
 import {emailRules, passwordRules, phoneRules} from "@/utils/rules";
+import {register} from "@/serve/reigster/register";
 onMounted(()=>{
  const user=useUserStoreHook()
  if (user.token){
@@ -88,6 +89,16 @@ const registerForm=ref({
   phone:'',
 })
 const loginFormRef=ref()
+const onRegister=async()=>{
+ registerFormRef.value.validate(async (valid:any)=>{
+   if(valid){
+      register(registerForm.value)
+   }
+   else {
+    ElMessage.error('请检查账号密码是否填写正确')
+   }
+  })
+}
 const onLogin=async ()=>{
   loginFormRef.value.validate(async (valid:any)=>{
     if(valid) {
@@ -138,13 +149,13 @@ const route = useRouter()
         <div class="registryBorder">
           <span class="title">注册</span>
           <div class="registryForm">
-            <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" label-width="0px" >
+            <el-form @submit.prevent="onRegister" ref="registerFormRef" :model="registerForm" :rules="registerRules" label-width="0px" >
               <el-form-item  prop="username" ><el-input  v-model="registerForm.username" placeholder="请输入用户名"></el-input></el-form-item>
               <el-form-item class="registerItem" prop="password" ><el-input show-password type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input></el-form-item>
               <el-form-item class="registerItem" prop="rePassword"><el-input show-password type="password" v-model="registerForm.rePassword" placeholder="请再次输入密码"></el-input></el-form-item>
               <el-form-item class="registerItem" prop="email" ><el-input v-model="registerForm.email" placeholder="请输入邮箱"></el-input></el-form-item>
               <el-form-item class="registerItem" prop="phone" ><el-input v-model="registerForm.phone" placeholder="请输入手机号"></el-input></el-form-item>
-                <el-button type="primary" @click="route.push('/')">注册</el-button>
+                <el-button type="primary" native-type="submit">注册</el-button>
             </el-form>
           </div>
         </div>

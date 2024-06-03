@@ -7,20 +7,25 @@ const login=require('../serve/login/login')
 const config=require('config')
 const jwt=require('jsonwebtoken')
 const app=require('./express')
+const mysql = require('../utils/mysql')
 const {findPermissionByUsername, selectUser} = require("../utils/mysql");
+app.post('/register',async (req,result)=>{
 
-
-app.post('/register',(req,result)=>{
-    console.log(req.body)
-    register.register(req.body).then(res=>{
-       if (res)  result.jsonp({
-           msg: '注册成功',
-           code: 200,
-       })
-        else   result.jsonp({
-           msg: '注册失败',
-           code: 400,
-       })
+    if (await mysql.userExist(req.body.username)) {
+        register.register(req.body).then(res => {
+            if (res) result.jsonp({
+                msg: '注册成功',
+                code: 200,
+            })
+            else result.jsonp({
+                msg: '注册失败',
+                code: 400,
+            })
+        })
+    }
+    else result.jsonp({
+        msg: '用户名已存在',
+        code: 400,
     })
 })
 app.post('/login', (req,result)=> {
@@ -46,12 +51,11 @@ app.post('/login', (req,result)=> {
 
 
    })})
+    app.get('/userInfo',(req,res)=>{
+    return jwt.verify(req.query.token, config.get('jwtSecret'))
+    })
     app.get('/', (req, res) => {
         res.send('hello world')
-    })
-    app.get('/refreshToken',async (req,res)=>{
-       const payload=await selectUser(req.body.username)
-       return  jwt.sign(payload,config.get('JwtConfig.secret'), {expiresIn:config.get('JwtConfig.expiresIn')})
     })
 
 module.exports=app
