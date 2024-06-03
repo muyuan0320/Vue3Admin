@@ -1,7 +1,7 @@
 import {request} from "@/utils/service";
 import {ElMessage} from "element-plus";
 
-const reigster =(data:RegisterAttribute)=>{
+export  const register =(data:RegisterAttribute)=>{
     request({
         data:data,
         url:'register'

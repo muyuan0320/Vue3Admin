@@ -14,9 +14,11 @@ router.beforeEach(async (to, from, next) => {
     try{
     await useStore.getUserInfo()
     const roles = useStore.roles
+        if (roles.length===0) return next('/')
+        else{
         userPermissionStore.setRoutes(roles)
         userPermissionStore.addRoutes.forEach((route:RouteRecordRaw)=>router.addRoute(route))
-        next({...to,replace:true})
+        next({...to,replace:true})}
     }
     catch (err:any){
     }

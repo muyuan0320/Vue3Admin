@@ -71,11 +71,12 @@ if (password.results[0]?.password)
     return password.results[0].password
     else return false
 }
+const userExist= async (data)=>{
+    const user = await select('*', 'user', `username = '${data}'`)
+    return !user.results[0];
+}
 const findPermissionByUsername= async (data)=>{
-
-
   const groupId =await select('permissionGroupId', 'user', `username = '${data}'`)
-
     console.log(groupId.results[0].permissionGroupId)
  const permission= await select('permission', 'permissiongroup', ` permissionGroupId = '${groupId.results[0].permissionGroupId}'`)
     return permission.results[0].permission
@@ -86,6 +87,7 @@ module.exports = {
     insertData,
     selectUser,
     selectUserAll,
-    findPermissionByUsername
+    findPermissionByUsername,
+    userExist
 }
 
