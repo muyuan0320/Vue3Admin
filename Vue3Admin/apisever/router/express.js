@@ -23,7 +23,6 @@ const TokenErrorHandler = async (err, req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With, x-refresh-token')
     res.header('Access-Control-Allow-Credentials', 'true');
-
     if (err.name === 'UnauthorizedError') {
         // 如果请求头中有Refresh Token，尝试刷新Access Token
         const refreshToken = req.headers['x-refresh-token'];

@@ -13,8 +13,14 @@ const {findPermissionByUsername, selectUser} = require("../utils/mysql");
 app.post('/register',(req,result)=>{
     console.log(req.body)
     register.register(req.body).then(res=>{
-       if (res)  result.send('注册成功')
-        else   result.send('注册失败')
+       if (res)  result.jsonp({
+           msg: '注册成功',
+           code: 200,
+       })
+        else   result.jsonp({
+           msg: '注册失败',
+           code: 400,
+       })
     })
 })
 app.post('/login', (req,result)=> {

@@ -4,6 +4,7 @@ import {onMounted, reactive, ref} from 'vue'
 import {useRouter} from "vue-router";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
+import {emailRules, passwordRules, phoneRules} from "@/utils/rules";
 onMounted(()=>{
  const user=useUserStoreHook()
  if (user.token){
@@ -11,12 +12,16 @@ onMounted(()=>{
    route.replace('/')
  }
 })
-const passwordRules=(rule:any, value:string, callback:any)=>{
+
+const repasswordRules=(rule:any, value:string, callback:any)=>{
   const passwordReg= /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[^\da-zA-Z\s]).{1,9}$/
   if (!passwordReg.test(value)){
 
     callback(new Error('密码必须包含大小写字母、数字和特殊字符，长度在8-20之间'))
-  }else{
+  }else if(value!==registerForm.value.password){
+    callback(new Error('两次密码不一致'))
+  }
+  else {
     callback()
   }
 }
@@ -34,16 +39,59 @@ const loginRules=ref({
   }
   ]
 })
+const registerRules=ref({
+  username:[{
+    required: true, message: '用户名不能为空', trigger: 'blur'
+  }],
+  password:[{
+    required:true,
+    message:'密码不能为空',
+    trigger: 'blur'
+  },{
+    validator:passwordRules,
+    trigger: 'blur'
+  }
+  ],
+  rePassword:[
+   {
+    validator:repasswordRules,
+    trigger: 'blur'
+    }
+  ],
+  email:[{
+    required:true,
+    message:'邮箱不能为空',
+    trigger: 'blur'
+  },{
+    validator:emailRules,
+    trigger: 'blur'
+  }],
+  phone:[{
+    required:true,
+    message:'手机号不能为空',
+    trigger: 'blur'
+  },{
+    validator:phoneRules,
+    trigger: 'blur'
+  }]
+})
 const loginForm=ref<LoginAttribute>({
   username:'',
   password:'',
+})
+const registerFormRef=ref()
+const registerForm=ref({
+  username:'',
+  password:'',
+  rePassword:'',
+  email:'',
+  phone:'',
 })
 const loginFormRef=ref()
 const onLogin=async ()=>{
   loginFormRef.value.validate(async (valid:any)=>{
     if(valid) {
       await login(loginForm.value)
-
     }
     else {
       ElMessage.error('请检查账号密码是否填写正确')
@@ -87,6 +135,19 @@ const route = useRouter()
         <template #label>
           <span class="title">注册</span>
         </template>
+        <div class="registryBorder">
+          <span class="title">注册</span>
+          <div class="registryForm">
+            <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" label-width="0px" >
+              <el-form-item  prop="username" ><el-input  v-model="registerForm.username" placeholder="请输入用户名"></el-input></el-form-item>
+              <el-form-item class="registerItem" prop="password" ><el-input show-password type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input></el-form-item>
+              <el-form-item class="registerItem" prop="rePassword"><el-input show-password type="password" v-model="registerForm.rePassword" placeholder="请再次输入密码"></el-input></el-form-item>
+              <el-form-item class="registerItem" prop="email" ><el-input v-model="registerForm.email" placeholder="请输入邮箱"></el-input></el-form-item>
+              <el-form-item class="registerItem" prop="phone" ><el-input v-model="registerForm.phone" placeholder="请输入手机号"></el-input></el-form-item>
+                <el-button type="primary" @click="route.push('/')">注册</el-button>
+            </el-form>
+          </div>
+        </div>
       </el-tab-pane>
 
     </el-tabs>
@@ -105,7 +166,7 @@ const route = useRouter()
 }
 
 .tab-pane{
-  height: 60vh;
+  height: 80vh;
   align-items: center;
   text-align: center;
   justify-content: center;
@@ -131,10 +192,20 @@ const route = useRouter()
   left: 18%;
   top: 20%;
   width: 70%;
-  height: 60%;
+  height: 40%;
   background: rgba(101, 216, 216, 0.9);
   border-radius: 15px;
 }
+.registryBorder{
+
+  position: absolute;
+  left: 18%;
+  width: 70%;
+  height: 60vh;
+  background: rgba(101, 216, 216, 0.9);
+  border-radius: 15px;
+}
+.registryForm{margin: 10%;height: 100%}
 .loginText{
   font-size: 3vh;
   color: #666;
@@ -151,7 +222,7 @@ const route = useRouter()
 }
 @media screen  and (max-width: 768px){
   .tab-pane{
-    height: 45vh;
+    height: 50vh;
     align-items: center;
     text-align: center;
     justify-content: center;
@@ -164,16 +235,24 @@ const route = useRouter()
   }
   .loginBox{
     position: absolute;
-    z-index: 50;
     left: 10%;
     width: 80%;
     background: #c7def1;
     top: 25%;
     border-radius: 15px;
-    height: 50vh;
+    height: 60vh;
   }
   .loginForm{
     margin: 5%;
+  }
+  .registryForm{
+    margin-top: 1%;
+  }
+  .registryBorder{
+    left: 5%;
+    height: 100%;
+    width: 90%;
+
   }
   .loginBorder{
     position: absolute;
@@ -182,5 +261,7 @@ const route = useRouter()
     height: 70%;
   }
 }
-
+.registerItem{
+ margin-top: 13%;
+}
 </style>
