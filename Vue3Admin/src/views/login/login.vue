@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {login} from '@/serve/login/login'
-import {onMounted, reactive, ref} from 'vue'
+import {onMounted,  ref} from 'vue'
 import {useRouter} from "vue-router";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
@@ -263,7 +263,6 @@ const route = useRouter()
     left: 5%;
     height: 100%;
     width: 90%;
-
   }
   .loginBorder{
     position: absolute;

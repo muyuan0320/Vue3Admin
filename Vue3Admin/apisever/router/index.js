@@ -8,7 +8,7 @@ const config=require('config')
 const jwt=require('jsonwebtoken')
 const app=require('./express')
 const mysql = require('../utils/mysql')
-const {findPermissionByUsername, selectUser} = require("../utils/mysql");
+const {findPermissionByUsername} = require("../utils/mysql");
 app.post('/register',async (req,result)=>{
 
     if (await mysql.userExist(req.body.username)) {
@@ -52,7 +52,7 @@ app.post('/login', (req,result)=> {
 
    })})
     app.get('/userInfo',(req,res)=>{
-    return jwt.verify(req.query.token, config.get('jwtSecret'))
+    res.jsonp (jwt.verify(req.query.token, config.get('jwtSecret')))
     })
     app.get('/', (req, res) => {
         res.send('hello world')
