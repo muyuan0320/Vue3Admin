@@ -3,7 +3,7 @@ import {setPermissions, setReFlushToken, setToken} from "@/utils/cache/cookies";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
-import {useRouter} from "vue-router";
+import {type RouteRecordRaw, useRouter} from "vue-router";
 import router from "@/router";
 
 const login = async (data: LoginAttribute) => {

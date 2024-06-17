@@ -7,7 +7,7 @@ const jwts = require('jsonwebtoken')
 const jwt = require('express-jwt')
 const {selectUser} = require("../utils/mysql");
 const app = express();
-app.use(express.static('./public'))
+app.use(express.static('./public/www'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(jwt.expressjwt({

@@ -1,7 +1,7 @@
 import {defineStore, } from "pinia";
 import {ref} from "vue";
 import type {RouteRecordRaw} from "vue-router";
-import {constantRoutes, dynamicRoutes} from "@/router";
+import router, {constantRoutes, dynamicRoutes} from "@/router";
 import store from "@/stores";
 
 /**
@@ -10,7 +10,7 @@ import store from "@/stores";
  **/
 const hasPermission = (roles: string[], route: RouteRecordRaw): boolean => {
     const routerRoles = route.meta?.roles
-    return routerRoles ? roles.some(role => routerRoles.includes(role)) : true
+    return routerRoles ? routerRoles.some(role => roles.includes(role)) : false
 }
 /**
  * @description 根据用户角色过滤路由（递归遍历路由，判断用户是否拥有该路由的权限，如果有，则返回该路由，反之，返回空数组）
@@ -21,7 +21,9 @@ const hasPermission = (roles: string[], route: RouteRecordRaw): boolean => {
 const filterDynamicRoutes = (routes: RouteRecordRaw[], roles: string[]) => {
     const res: RouteRecordRaw[] = []
     routes.forEach(route => {
+
         const tmp = {...route}
+
         if (hasPermission(roles, tmp)) {
             if (tmp.children) {
                 tmp.children = filterDynamicRoutes(tmp.children, roles)
@@ -39,7 +41,6 @@ export const useUserPermissionStore :any = defineStore('permission', () => {
     //可访问的路由
     const routes = ref<RouteRecordRaw[]>([])
     const addRoutes = ref<RouteRecordRaw[]>([])
-
     /**
      * @description 设置动态路由 根据router目录下的index.ts文件中的dynamicRoutes中的路由的meta中的role，如果roles有这个权限，则添加路由
      * @param roles 角色用户集
@@ -49,6 +50,7 @@ export const useUserPermissionStore :any = defineStore('permission', () => {
         //这里给filterDynamicRoutes方法传入的参数是动态路由数组来源于router目录下的index.ts文件，将所有的动态路由筛查权限
         const accessRoutes=filterDynamicRoutes(dynamicRoutes,roles)
         routes.value = constantRoutes.concat(accessRoutes)
+        console.log(accessRoutes)
         addRoutes.value=accessRoutes
     }
 
