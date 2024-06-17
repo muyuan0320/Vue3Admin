@@ -3,7 +3,7 @@ import {userStore, useUserStoreHook} from "@/stores/modules/users";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {getToken} from "@/utils/cache/cookies";
 import {ElMessage} from "element-plus";
-const whiteTable:string[]=['/login','/forget',]
+const whiteTable:string[]=['/login','/forget','/']
 export const constantRoutes :RouteRecordRaw[] =[
   {path:'/',
   name:'name',
@@ -21,10 +21,18 @@ export  const dynamicRoutes :RouteRecordRaw[] =[
     path:'/businessDetail/:bid?',
     name:'business',
     meta:{
-      title:'商品详情',
-      roles:['Admin','Business']
+      title:'商家详情',
+      roles:['Admin','Business','User']
+    },
+  },  { component: ()=>import('@/views/mine/mine.vue'),
+    path:'/mine/:Uid?',
+    name:'mine',
+    meta:{
+      title:'个人界面',
+      roles:['Admin','Business','User']
     },
   },
+
 ]
 const router = createRouter({
   history:createWebHistory(),
@@ -40,7 +48,7 @@ export default router
 router.beforeEach(async (to, from, next) => {
   const useStore = useUserStoreHook();
   const userPermissionStore = usePermissionStoreHook();
-  await useStore.getUserInfo()
+  await useStore.getUserInfo() // 获取用户信息 包括权限信息等
   const tokenExists = getToken();
   const hasRoles = useStore.roles.length !== 0;
   const routesNeedToAdd = userPermissionStore.addRoutes.length === 0;

@@ -11,7 +11,7 @@ const register= async (data)=>{
       username:data.username,
       password:await bcrypt.hash(data.password,10),
       createTime:new Date().toLocaleDateString(),
-      permissionGroupId:0,
+      permissionGroupId:2,
       email:data.email,
       phone:data.phone,
       isHaveExtraPermission:0,

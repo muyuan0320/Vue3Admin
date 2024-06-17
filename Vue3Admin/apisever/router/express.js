@@ -14,7 +14,7 @@ app.use(jwt.expressjwt({
     secret: config.get('JWTConfig.secret'),//密钥
     algorithms: ['HS256']
 }).unless({
-    path: ['/login', '/register']
+    path: ['/login', '/register','/forgetPassword','/businessList']
 }))
 
 const TokenErrorHandler = async (err, req, res, next) => {

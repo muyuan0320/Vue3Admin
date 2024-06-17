@@ -13,20 +13,25 @@ router
 </el-menu-item>
   <div class="itemGroup">
     <el-menu-item index="/" class="font">首页</el-menu-item>
+    <el-menu-item index="/mine" class="font"  v-permission="['Admin','Business','User']">我的</el-menu-item>
     <el-sub-menu v-if="userStore.roles.length"  class="subMenu"  index="">
       <template #title >
         <el-avatar class="avatar"></el-avatar>
       </template>
       <el-menu-item v-permission="['Admin']" >
-
-
         <div class="font">
         管理界面
+        </div>
+      </el-menu-item>
+      <el-menu-item v-permission="['Business']">
+        <div class="font">
+        商店管理
         </div>
       </el-menu-item>
       <el-menu-item @click="userStore.logout" index="/login">
         <div class="font">退出登录</div>
       </el-menu-item>
+
     </el-sub-menu>
 
     <el-menu-item v-else index="/login" class="loginBox">
