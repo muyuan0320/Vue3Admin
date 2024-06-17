@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import { ref} from "vue";
 import store from "@/stores";
-import { getToken, removePermission, removeReFlushToken, removeToken} from "@/utils/cache/cookies";
+import { getToken, removeReFlushToken, removeToken} from "@/utils/cache/cookies";
 import {request} from "@/utils/service";
 
 export  const userStore =defineStore('user',()=>{
