@@ -1,9 +1,8 @@
 import {request} from "@/utils/service";
-import {setPermissions, setReFlushToken, setToken} from "@/utils/cache/cookies";
+import { setReFlushToken, setToken} from "@/utils/cache/cookies";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {useUserStoreHook} from "@/stores/modules/users";
 import {ElMessage} from "element-plus";
-import {type RouteRecordRaw, useRouter} from "vue-router";
 import router from "@/router";
 
 const login = async (data: LoginAttribute) => {
@@ -14,7 +13,7 @@ const login = async (data: LoginAttribute) => {
    if (res.data.code == 200) {
         setToken(res.data.result[0].token)
         setReFlushToken(res.data.result[0].reFleshToken)
-       setPermissions(res.data.result[0].permission.split(','))
+
             const permission = usePermissionStoreHook()
             permission.setRoutes(res.data.result[0].permission.split(','))
             const user = useUserStoreHook()

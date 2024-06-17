@@ -1,7 +1,7 @@
 import {defineStore, } from "pinia";
 import {ref} from "vue";
 import type {RouteRecordRaw} from "vue-router";
-import router, {constantRoutes, dynamicRoutes} from "@/router";
+import {constantRoutes, dynamicRoutes} from "@/router";
 import store from "@/stores";
 
 /**

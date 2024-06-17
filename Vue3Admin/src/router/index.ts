@@ -1,11 +1,8 @@
 import {createRouter, createWebHistory, type RouteRecordRaw} from 'vue-router'
-import HelloWorld from "@/components/HelloWorld.vue";
-import {useUserStoreHook} from "@/stores/modules/users";
+import {userStore, useUserStoreHook} from "@/stores/modules/users";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {getToken} from "@/utils/cache/cookies";
 import {ElMessage} from "element-plus";
-import {forEach} from "lodash-es";
-import BusinessDetail from '@/views/Detail/BusinessDetail/businessDetail.vue';
 const whiteTable:string[]=['/login','/forget',]
 export const constantRoutes :RouteRecordRaw[] =[
   {path:'/',
@@ -43,7 +40,7 @@ export default router
 router.beforeEach(async (to, from, next) => {
   const useStore = useUserStoreHook();
   const userPermissionStore = usePermissionStoreHook();
-
+  await useStore.getUserInfo()
   const tokenExists = getToken();
   const hasRoles = useStore.roles.length !== 0;
   const routesNeedToAdd = userPermissionStore.addRoutes.length === 0;
