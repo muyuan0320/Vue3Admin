@@ -81,7 +81,9 @@ const findPermissionByUsername= async (data)=>{
  const permission= await select('permission', 'permissiongroup', ` permissionGroupId = '${groupId.results[0].permissionGroupId}'`)
     return permission.results[0].permission
 }
+
 module.exports = {
+    select,
     findPasswordByUsername,
     regist,
     insertData,

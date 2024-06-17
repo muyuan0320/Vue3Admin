@@ -8,7 +8,9 @@ const config=require('config')
 const jwt=require('jsonwebtoken')
 const app=require('./express')
 const mysql = require('../utils/mysql')
-const {findPermissionByUsername, selectUser} = require("../utils/mysql");
+const product = require("../serve/product/product");
+const {findPermissionByUsername} = require("../utils/mysql");
+const business = require("../serve/business/business");
 app.post('/register',async (req,result)=>{
 
     if (await mysql.userExist(req.body.username)) {
@@ -51,9 +53,25 @@ app.post('/login', (req,result)=> {
 
 
    })})
-    app.get('/userInfo',(req,res)=>{
-    return jwt.verify(req.query.token, config.get('jwtSecret'))
+    app.get('/userInfo', async (req,res)=>{
+    const payload = jwt.verify( req.headers.authorization.split(' ')[1],config.get('JWTConfig').secret)
+        payload.roles=await findPermissionByUsername(payload.username)
+        res.jsonp({
+            userInfo:payload
+        })
+
+
     })
+app.get('/BusinessList', async (req,res)=>{
+ const result=await business.businessInfoAll()
+
+    res.jsonp(result)
+})
+app.get('/productInfo',async (req,res)=>{
+
+    const result=await product.getProductListByBid(req.query.bid)
+    res.jsonp(result)
+})
     app.get('/', (req, res) => {
         res.send('hello world')
     })

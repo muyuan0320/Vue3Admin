@@ -18,10 +18,10 @@ export  const userStore =defineStore('user',()=>{
             method: 'get'
         }
     )
-        username.value=result.data.username
-        roles.value=result.data.roles
-
+        username.value=result.data.userInfo.username
+        roles.value=result.data.userInfo.roles
     }
+
     const logout = ()=>{
         removeReFlushToken()
         removeToken()

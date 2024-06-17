@@ -12,8 +12,8 @@ router
   <el-image class="logo" src="./favicon.ico"></el-image>
 </el-menu-item>
   <div class="itemGroup">
-
-    <el-sub-menu v-if="userStore.roles.length"  class="subMenu" >
+    <el-menu-item index="/" class="font">首页</el-menu-item>
+    <el-sub-menu v-if="userStore.roles.length"  class="subMenu"  index="">
       <template #title >
         <el-avatar class="avatar"></el-avatar>
       </template>
