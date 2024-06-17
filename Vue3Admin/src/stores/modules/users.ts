@@ -1,11 +1,11 @@
 import {defineStore} from "pinia";
 import { ref} from "vue";
 import store from "@/stores";
-import {getPermissions, getToken, removePermission, removeReFlushToken, removeToken} from "@/utils/cache/cookies";
+import { getToken, removePermission, removeReFlushToken, removeToken} from "@/utils/cache/cookies";
 import {request} from "@/utils/service";
 
 export  const userStore =defineStore('user',()=>{
-    const roles=ref<string[]>(getPermissions()||[])
+    const roles=ref<string[]>([''])
     const token =ref<string>(getToken() ||'')
     const username =ref<string>('')
     const getUserInfo = async ()=>{
@@ -25,7 +25,6 @@ export  const userStore =defineStore('user',()=>{
     const logout = ()=>{
         removeReFlushToken()
         removeToken()
-        removePermission()
         token.value=''
         roles.value=[]
     }

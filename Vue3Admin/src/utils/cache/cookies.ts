@@ -21,9 +21,3 @@ export const setReFlushToken=(token:string)=>{
 export const getReFlushToken=()=>{
     return Cookies.get(CacheKey.ReFlushTOKEN)
 }
-export const setPermissions=(permissions:string[])=>{
-    return Cookies.set(CacheKey.PERMISSION,permissions.join(','))
-}
-export const getPermissions=():string[]|undefined=>{
-    return (Cookies.get(CacheKey.PERMISSION)?.split(','))
-}
