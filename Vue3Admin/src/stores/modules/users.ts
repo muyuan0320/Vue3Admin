@@ -20,6 +20,7 @@ export  const userStore =defineStore('user',()=>{
     )
         username.value=result.data.userInfo.username
         roles.value=result.data.userInfo.roles
+        return result
     }
 
     const logout = ()=>{
