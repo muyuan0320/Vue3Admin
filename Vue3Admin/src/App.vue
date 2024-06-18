@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 
 import {useUserStoreHook} from "@/stores/modules/users";
-
+import {request} from "@/utils/service";
+import {getTodo, upLoadTodo} from "@/serve/Todo/todo";
 const userStore = useUserStoreHook();
+
+upLoadTodo({
+  todo:'test'
+})
 </script>
 <template>
 <el-menu class="menu"
@@ -13,8 +18,9 @@ router
 </el-menu-item>
   <div class="itemGroup">
     <el-menu-item index="/" class="font">首页</el-menu-item>
-    <el-menu-item index="/mine" class="font"  v-permission="['Admin','Business','User']">我的</el-menu-item>
-    <el-sub-menu v-if="userStore.roles.length"  class="subMenu"  index="">
+    <div></div>
+    <el-menu-item index="/mine" class="font" >我的</el-menu-item>
+    <el-sub-menu v-if="userStore.roles.length"  class="subMenu"  >
       <template #title >
         <el-avatar class="avatar"></el-avatar>
       </template>

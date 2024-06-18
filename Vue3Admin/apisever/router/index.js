@@ -9,8 +9,14 @@ const jwt=require('jsonwebtoken')
 const app=require('./express')
 const mysql = require('../utils/mysql')
 const product = require("../serve/product/product");
+const todo=require("../serve/todo/todo");
 const {findPermissionByUsername} = require("../utils/mysql");
 const business = require("../serve/business/business");
+
+
+const getInfo=(req)=>{
+  return   jwt.verify( req.headers.authorization.split(' ')[1],config.get('JWTConfig.secret'))
+}
 app.post('/register',async (req,result)=>{
 
     if (await mysql.userExist(req.body.username)) {
@@ -54,7 +60,7 @@ app.post('/login', (req,result)=> {
 
    })})
     app.get('/userInfo', async (req,res)=>{
-    const payload = jwt.verify( req.headers.authorization.split(' ')[1],config.get('JWTConfig').secret)
+    const payload = getInfo(req)
         payload.roles=await findPermissionByUsername(payload.username)
         res.jsonp({
             userInfo:payload
@@ -72,8 +78,40 @@ app.get('/productInfo',async (req,res)=>{
     const result=await product.getProductListByBid(req.query.bid)
     res.jsonp(result)
 })
-    app.get('/', (req, res) => {
-        res.send('hello world')
-    })
-
+app.post('/uploadTodo',async (req,res)=> {
+        const data = {
+            Uid: getInfo(req).Uid,
+            todo: req.body.todo
+        }
+        try {
+            const result = await todo.insertTodo(data)
+        }
+        catch (err) {
+            res.jsonp({
+                msg:'添加失败',
+                code:400
+            })
+        }
+        res.jsonp({
+            msg:'添加成功',
+            code:200
+        })
+    }
+)
+app.get('/getTodo',async (req,res)=>{
+   try {
+       const result={
+           result:await  todo.getTodo(getInfo(req).Uid),
+           msg:'获取成功',
+           code:200
+       }
+       res.jsonp(result)
+   }
+   catch (err){
+       res.jsonp({
+           msg:'获取失败',
+           code:400
+       })
+    }
+})
 module.exports=app
