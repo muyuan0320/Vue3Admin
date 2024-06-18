@@ -9,12 +9,12 @@ const createPool = ()  => {
 
 const pool=createPool()
 
-const select= async (columnName,tableName,where='')=>{
+const select= async (columnName,tableName,where='',order='')=>{
 return new Promise((resolve,reject)=>{
     pool.getConnection((err,connection)=>{
         if (err) reject(err)
         else {
-            connection.query(`select ${columnName} from ${tableName} ${where===''?'':'where '+ where}`,(err,results)=>{
+            connection.query(`select ${columnName} from ${tableName} ${where===''?'':'where '+ where} ${order===''?'':'order by '+ order}`,(err,results)=>{
                 connection.release()//释放连接
                 if (err) reject(err)
                 else resolve ({results})
