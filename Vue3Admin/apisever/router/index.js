@@ -113,7 +113,7 @@ app.post('/updateUserInfo',async(req,res)=>{
     try {
 
         if (await isAdmin(req)) {
-               if (userExist(req.body.username)) res.jsonp({
+               if (await userExist(req.body.username)&&req.body.username!==getInfo(req).username) res.jsonp({
                    msg: '用户名已存在', code: 400
                })
             else {
