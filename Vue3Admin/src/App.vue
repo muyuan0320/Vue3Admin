@@ -1,12 +1,18 @@
 <script lang="ts" setup>
-
 import {useUserStoreHook} from "@/stores/modules/users";
 import router from "@/router";
 import {getBusinessInfo} from "@/serve/InfoGet/InfoGet";
 import {ElMessage} from "element-plus";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {createShop} from "@/serve/Business/business";
 const userStore = useUserStoreHook();
+const isAdmin=ref(false)
+const isBusiness=ref(false)
+onMounted(async ()=>{
+  await userStore.getUserInfo();
+  isAdmin.value=userStore.roles.includes('Admin')
+  isBusiness.value=userStore.roles.includes('Business')
+})
 const form =ref({
   Bname:'',
   description:'',
@@ -29,12 +35,12 @@ const isShow = ref(false);
         <template #title>
           <el-avatar class="avatar"></el-avatar>
         </template>
-        <el-menu-item  v-permission="['Admin']" @click="router.push('/control');menuRef.close('sub')">
+        <el-menu-item  v-permission="['Admin'] " v-if="isAdmin" @click="router.push('/control');menuRef.close('sub')">
           <div class="font">
             管理界面
           </div>
         </el-menu-item>
-        <el-menu-item v-permission="['Business']" index="/businessControl"
+        <el-menu-item v-permission="['Business']" v-if="isBusiness" index="/businessControl"
                       @click=" async()=>{
               menuRef?.close('sub')
         const bid = await getBusinessInfo();

@@ -21,8 +21,7 @@ const login = async (data: LoginAttribute) => {
             user.roles=res.data.result[0].permission.split(',')
        ElMessage.success(res.data.msg)
        await router.replace({path: '/',replace:true})
-       location.reload()
-        } else {
+       location.reload()} else {
        ElMessage.error(res.data.msg)
 
         }
