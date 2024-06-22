@@ -28,3 +28,17 @@ export const getProductInfo=async (bid:any)=>{
         }
     }))
 }
+export const getBusinessInfo=async ()=>{
+    return (await request({
+        url:'BusinessInfoByUid',
+        method:'get',
+    }))
+}
+export const getUserList =async()=>{
+    return (await request(
+        {
+            url:'getUserList',
+            method:'get'
+        }
+    ))
+}

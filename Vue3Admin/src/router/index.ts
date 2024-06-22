@@ -5,6 +5,8 @@ import {getToken} from "@/utils/cache/cookies";
 import {ElMessage} from "element-plus";
 const whiteTable:string[]=['/login','/forget','/']
 export const constantRoutes :RouteRecordRaw[] =[
+  {path:'/*',
+  redirect:'/'},
   {path:'/',
   name:'name',
   component:()=>import('@/views/menu/menu.vue')},
@@ -32,6 +34,24 @@ export  const dynamicRoutes :RouteRecordRaw[] =[
       roles:['Admin','Business','User']
     },
   },
+  {component:()=>import('@/views/Control/BusinessControl/BusinessControl.vue'),
+  path:'/businessControl/:Bid',
+    name:'businessControl',
+    meta:{
+      title:'商家控制',
+      roles:['Business']
+    },
+  },
+  {
+    component:()=>import('@/views/Control/Control/control.vue'),
+    path:'/control',
+    name:'Control',
+    meta:{
+      title:'用户控制',
+      roles:['Admin']
+    },
+  },
+
 
 ]
 const router = createRouter({

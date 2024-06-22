@@ -8,8 +8,8 @@ const jwt = require('express-jwt')
 const {selectUser} = require("../utils/mysql");
 const app = express();
 app.use(express.static('./public/www'))
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.json({limit:'100mb'}))
+app.use(express.urlencoded({extended: false,limit:'100mb'}))
 app.use(jwt.expressjwt({
     secret: config.get('JWTConfig.secret'),//密钥
     algorithms: ['HS256']
@@ -34,7 +34,6 @@ const TokenErrorHandler = async (err, req, res, next) => {
             }
             const payload = await selectUser(decoded.payloads.username)
             const newAccessToken = jwts.sign(payload, config.get('JWTConfig.secret'), {expiresIn: config.get('JWTConfig.expiresIn')});
-            console.log(newAccessToken)
             return res.status(401).json({token: newAccessToken});
         } catch (err) {
             res.status(400).send('Unauthorized');
@@ -48,7 +47,7 @@ app.all('*', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With, x-refresh-token')
     res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
-
     next()
 })
+
 module.exports = app
