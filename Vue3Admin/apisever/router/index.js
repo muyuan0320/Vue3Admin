@@ -13,6 +13,7 @@ const todo = require("../serve/todo/todo");
 const {findPermissionByUsername, userExist} = require("../utils/mysql");
 const business = require("../serve/business/business");
 const admin =require("../serve/admin/admin");
+const {businessInfo} = require("../serve/business/business");
 const getInfo = (req) => {
     return jwt.verify(req.headers.authorization.split(' ')[1], config.get('JWTConfig.secret'))
 }
@@ -245,5 +246,17 @@ if (await isAdmin(req)) {
         msg: '删除失败', code: 400
     })}
 })
+app.get('/getBusinessInfoByBid', async (req,res)=>{
+    try{
 
+      const result= ( await businessInfo(req.query.Bid))
+        res.jsonp(result)
+    }
+    catch (err){
+        res.jsonp({
+            code:408,
+            msg:'获取失败'
+        })
+    }
+})
 module.exports = app

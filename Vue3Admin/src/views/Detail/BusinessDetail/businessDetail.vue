@@ -2,9 +2,9 @@
 import {useRoute,useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {getProductInfo} from "@/serve/InfoGet/InfoGet";
-
-
-const productInfo=ref({})
+import {getBusinessInfoByBid} from "@/serve/Business/business";
+const typeList =ref<string[]>([])
+const productInfo=ref<any>({})
 const bid=ref(useRoute().params.bid)
 const router = useRouter();
 
@@ -14,6 +14,8 @@ const goBack = () => {
 
 onMounted(async ()=>{
  productInfo.value= (await getProductInfo(bid.value)).data.results
+  typeList.value=( await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(',')
+  console.log(typeList.value)
 })
 </script>
 

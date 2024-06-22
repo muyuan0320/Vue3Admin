@@ -48,3 +48,12 @@ export const EditProduct = async (data: any) => {
     })
   return res
 }
+export const getBusinessInfoByBid = async (Bid:any)=>{
+    return (await request({
+        url:'getBusinessInfoByBid',
+        method:'get',
+        params:{
+            Bid:Bid
+        }
+    }))
+}
