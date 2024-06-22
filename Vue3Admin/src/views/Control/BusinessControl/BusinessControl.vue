@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import {getBusinessInfo, getProductInfo} from "@/serve/InfoGet/InfoGet";
 import {useRoute} from "vue-router";
 import {
+  ElLoading,
   ElMessage,
   type UploadInstance,
   type UploadRequestOptions
@@ -34,9 +35,11 @@ Bid.value=useRoute().params.Bid
    await router.replace('/')
     location.reload()
   }
-
+  const instance = ElLoading.service({
+    text:'加载中'
+  })
   productList.value=( await getProductInfo(Bid.value)).data.results
-
+instance.close()
 })
 
 
@@ -70,7 +73,12 @@ const handleSubmit= async ()=>{
     }
   }else{await addProducts(addProduct.value)
   }
-  productList.value=( await getProductInfo(useRoute().params.Bid)).data.results
+  const instance = ElLoading.service({
+    text:'加载中'
+  })
+  productList.value=(
+      await getProductInfo(useRoute().params.Bid)).data.results
+  instance.close()
   addProduct.value={
     Pname:'',
     Pimg:'',

@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getProductInfo } from "@/serve/InfoGet/InfoGet";
 import { getBusinessInfoByBid } from "@/serve/Business/business";
+import {ElLoading} from "element-plus";
 
 const typeList = ref<string[]>([]);
 const productInfo = ref<any>({});
@@ -11,8 +12,12 @@ const router = useRouter();
 const isCollapsed = ref(false);
 
 onMounted(async () => {
+  const instance = ElLoading.service({
+    text:'加载中'
+  })
   productInfo.value = (await getProductInfo(bid.value)).data.results;
   typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
+  instance.close()
 });
 
 const toggleCollapse = () => {
