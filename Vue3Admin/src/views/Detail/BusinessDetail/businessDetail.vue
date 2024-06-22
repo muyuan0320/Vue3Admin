@@ -1,35 +1,53 @@
 <script setup lang="ts">
-import {useRoute,useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
-import {getProductInfo} from "@/serve/InfoGet/InfoGet";
-import {getBusinessInfoByBid} from "@/serve/Business/business";
-const typeList =ref<string[]>([])
-const productInfo=ref<any>({})
-const bid=ref(useRoute().params.bid)
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { getProductInfo } from "@/serve/InfoGet/InfoGet";
+import { getBusinessInfoByBid } from "@/serve/Business/business";
+
+const typeList = ref<string[]>([]);
+const productInfo = ref<any>({});
+const bid = ref(useRoute().params.bid);
 const router = useRouter();
+const isCollapsed = ref(false);
+
+onMounted(async () => {
+  productInfo.value = (await getProductInfo(bid.value)).data.results;
+  typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
+});
+
+const toggleCollapse = () => {
+  isCollapsed.value = !isCollapsed.value;
+};
 
 const goBack = () => {
   router.back();
 };
-
-onMounted(async ()=>{
- productInfo.value= (await getProductInfo(bid.value)).data.results
-  typeList.value=( await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(',')
-  console.log(typeList.value)
-})
 </script>
 
 <template>
-  <div class="detail">
-    <div class="content">
-      <div class="left">
-      </div>
-      <div class="right" v-for="item in productInfo" :key="item.id">
-        <div class="item">
-          <img class="img" :src="item.Pimg">
-          <div class="pname">{{item.Pname}}</div>
-          <div class="Pprice">{{item.Pprice}}</div>
-          <div class="type">{{item.type}}</div>
+  <div class="container">
+    <div class="sidebar" :class="{ collapsed: isCollapsed }">
+      <button class="toggle-button" @click="toggleCollapse">{{ isCollapsed ? '展开' : '收起' }}</button>
+      <nav v-if="!isCollapsed">
+        <ul>
+          <li v-for="type in typeList" :key="type">{{ type }}</li>
+        </ul>
+      </nav>
+      <button class="back-button" @click="goBack">Back</button>
+    </div>
+
+    <div class="detail">
+      <div class="content">
+        <div class="left">
+          <!-- 左侧可固定内容 -->
+        </div>
+        <div class="right">
+          <div class="item" v-for="item in productInfo" :key="item.id">
+            <img class="img" :src="item.Pimg" alt="Product Image">
+            <div class="pname">{{ item.Pname }}</div>
+            <div class="Pprice">{{ item.Pprice }}</div>
+            <div class="type">{{ item.type }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -37,16 +55,28 @@ onMounted(async ()=>{
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+  transition: width 0.5s;
+}
+
+.collapsed {
+  width: 70px;
+}
+
 .detail {
-  position: relative;
+  flex: 1;
   background-color: #f0f0f0;
   padding: 20px;
 }
 
-.back-button {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+.back-button,.toggle-button {
+  margin-top: 10px;
   padding: 8px 12px;
   background-color: #007bff;
   color: white;
@@ -56,7 +86,7 @@ onMounted(async ()=>{
 }
 
 .content {
-  display: flex; /* 使用 Flex 布局 */
+  display: flex;
   justify-content: space-between; /* 左右两侧水平分布 */
   align-items: flex-start; /* 上下对齐方式 */
   gap: 20px; /* 间隔 */

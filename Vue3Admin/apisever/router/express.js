@@ -8,8 +8,8 @@ const jwt = require('express-jwt')
 const {selectUser} = require("../utils/mysql");
 const app = express();
 app.use(express.static('./public/www'))
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.json({limit:'100mb'}))
+app.use(express.urlencoded({extended: false,limit:'100mb'}))
 app.use(jwt.expressjwt({
     secret: config.get('JWTConfig.secret'),//密钥
     algorithms: ['HS256']
