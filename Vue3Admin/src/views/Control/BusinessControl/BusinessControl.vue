@@ -60,7 +60,14 @@ const handleSubmit= async ()=>{
 
   isShow.value=false
   if(isEdit.value){
-  await  EditProduct(addProduct.value)
+    await  EditProduct(addProduct.value)
+    addProduct.value={
+      Pname:'',
+      Pimg:'',
+      Pprice:0,
+      Pdesc:'',
+      type:'',
+    }
   }else{await addProducts(addProduct.value)
   }
   productList.value=( await getProductInfo(useRoute().params.Bid)).data.results
@@ -114,7 +121,14 @@ const handleUpload=async(pragmas:UploadRequestOptions)=>{
 </el-table>
   <el-dialog
       v-model="isShow"
-      :before-close="()=>{isShow=false}"
+      :before-close="()=>{isShow=false;addProduct={
+        Pname:'',
+    Pimg:'',
+    Pprice:0,
+    Pdesc:'',
+    type:'',
+
+      }}"
       :title="title"
   >
     <el-form v-model="addProduct" :ref="addProductRef" @submit.prevent="handleSubmit">

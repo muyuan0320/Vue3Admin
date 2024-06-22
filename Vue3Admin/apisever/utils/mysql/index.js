@@ -74,7 +74,7 @@ const updateData = async (table, data, where) => {
 const selectUserAll= async ()=>{
     try{
 
-      return ( await select('*','user'))}
+      return ( await select('*','user','','username '))}
     catch (err){
         console.log(err)
         throw  err
