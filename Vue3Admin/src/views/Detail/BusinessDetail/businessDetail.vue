@@ -2,7 +2,7 @@
 import {useRoute,useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {getProductInfo} from "@/serve/InfoGet/InfoGet";
-import Side from "./DetailSide.vue";
+
 
 const productInfo=ref({})
 const bid=ref(useRoute().params.bid)
