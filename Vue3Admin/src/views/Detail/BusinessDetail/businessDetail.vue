@@ -10,14 +10,18 @@ const productInfo = ref<any>({});
 const bid = ref(useRoute().params.bid);
 const router = useRouter();
 const isCollapsed = ref(false);
+const totalValue = ref(0);
+const filteredProductInfo = ref([]);  // 新的用于展示的商品列表
 
 onMounted(async () => {
   const instance = ElLoading.service({
     text:'加载中'
   })
-  productInfo.value = (await getProductInfo(bid.value)).data.results;
+  productInfo.value = (await getProductInfo(bid.value)).data.results.map((item: any) => ({ ...item, quantity: 0 }));
   typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
+  filteredProductInfo.value = productInfo.value;
   instance.close()
+  updateTotalValue();
 });
 
 const toggleCollapse = () => {
@@ -27,6 +31,28 @@ const toggleCollapse = () => {
 const goBack = () => {
   router.back();
 };
+
+const changeQuantity = (index: number, delta: number) => {
+  if (productInfo.value[index].quantity + delta > 0||productInfo.value[index].quantity==1) {
+    productInfo.value[index].quantity += delta;
+    updateTotalValue();
+  }
+};
+const updateTotalValue = () => {
+  let total = 0;
+  for (let item of productInfo.value) {
+    total += item.Pprice * item.quantity;
+  }
+  totalValue.value = total;
+};
+
+const filterProducts = (type: string) => {
+  if (type === '全部') {
+    filteredProductInfo.value = productInfo.value;  // 显示全部商品
+  } else {
+    filteredProductInfo.value = productInfo.value.filter((item: any) => item.type === type);  // 根据类型过滤商品
+  }
+};
 </script>
 
 <template>
@@ -35,25 +61,31 @@ const goBack = () => {
       <button class="toggle-button" @click="toggleCollapse">{{ isCollapsed ? '展开' : '收起' }}</button>
       <nav v-if="!isCollapsed">
         <ul>
-          <li v-for="type in typeList" :key="type">{{ type }}</li>
+          <li @click="filterProducts('全部')">全部</li>
+          <li v-for="type in typeList" :key="type" @click="filterProducts(type)">{{ type }}</li>
         </ul>
       </nav>
       <button class="back-button" @click="goBack">Back</button>
     </div>
 
     <div class="detail">
-      <div class="content">
-        <div class="left">
-          <!-- 左侧可固定内容 -->
-        </div>
-        <div class="right">
-          <div class="item" v-for="item in productInfo" :key="item.id">
-            <img class="img" :src="item.Pimg" alt="Product Image">
-            <div class="pname">{{ item.Pname }}</div>
-            <div class="Pprice">{{ item.Pprice }}</div>
-            <div class="type">{{ item.type }}</div>
-          </div>
-        </div>
+      <div class="item" v-for="(item, index) in filteredProductInfo" :key="item.Pid">
+        <div class="image">
+              <img class="img" :src="item.Pimg" alt="Product Image">
+            </div>
+            <div class="info">
+              <div class="pname">{{ item.Pname }}</div>
+              <div class="Pprice">￥{{ item.Pprice }}</div>
+              <div class="type">{{ item.Pdesc }}</div>
+              <div class="quantity-control">
+                <button class="plus-button" @click="changeQuantity(index, -1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button class="minus-button" @click="changeQuantity(index, 1)">+</button>
+              </div>
+            </div>
+       </div>
+      <div class="total-value">
+        总价: ￥{{ totalValue }}
       </div>
     </div>
   </div>
@@ -66,8 +98,9 @@ const goBack = () => {
 
 .sidebar {
   width: 200px;
-  background-color: #f5f5f5;
+  background-color: #c7def1;
   transition: width 0.5s;
+  cursor: pointer;
 }
 
 .collapsed {
@@ -80,32 +113,15 @@ const goBack = () => {
   padding: 20px;
 }
 
-.back-button,.toggle-button {
+.back-button, .toggle-button {
   margin-top: 10px;
   padding: 8px 12px;
   background-color: #007bff;
-  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.content {
-  display: flex;
-  justify-content: space-between; /* 左右两侧水平分布 */
-  align-items: flex-start; /* 上下对齐方式 */
-  gap: 20px; /* 间隔 */
-}
-
-.left {
-  flex: 0 0 auto; /* 左侧固定宽度 */
-}
-
-.right {
-  flex: 1 1 auto; /* 右侧自适应宽度 */
-  display: flex;
-  flex-direction: column; /* 信息内容垂直排列 */
-}
 
 .item {
   border: 2px solid #ccc;
@@ -114,6 +130,12 @@ const goBack = () => {
   background-color: #c7def1;
   width: 100%; /* 宽度 100% */
   margin-bottom: 20px; /* 底部间距 */
+  display: flex; /* 使用 flex 布局 */
+  align-items: center; /* 垂直居中 */
+}
+
+.image {
+  width: 200px;
 }
 
 .img {
@@ -121,15 +143,42 @@ const goBack = () => {
   max-width: 200px;
 }
 
+.info {
+  flex: 1;
+  display: flex; /* 使用 flex 布局 */
+  flex-direction: column; /* 垂直排列 */
+  justify-content: center; /* 垂直居中 */
+}
+
 .pname {
+  font-size: 18px;
   font-weight: bold;
 }
 
 .Pprice {
-  color: #007bff;
+  color: red;
 }
 
 .type {
   margin-top: 5px;
+}
+
+.total-value {
+  font-size: 18px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #c7def1;
+  color: red;
+  text-align: center;
+  padding: 10px 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+.plus-button, .minus-button {
+  border-radius: 50%;
+  border: 1px solid #322e2e;
+  cursor: pointer;
+  background-color: #c7def1;
 }
 </style>
