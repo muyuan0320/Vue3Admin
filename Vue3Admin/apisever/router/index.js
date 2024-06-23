@@ -259,4 +259,19 @@ app.get('/getBusinessInfoByBid', async (req,res)=>{
         })
     }
 })
+app.get('/getProductListByType',async(req,res)=>{
+    try{
+        const data={
+            Bid:req.query.bid,
+            type:req.query.type
+        }
+        const result=await product.getProductListByType(data)
+        res.jsonp(result)
+    }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'获取失败'
+        })
+    }
+})
 module.exports = app

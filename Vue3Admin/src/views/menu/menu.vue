@@ -42,10 +42,17 @@ onMounted(async()=>{
 <style scoped>
 .menu{
   display: flex;
+  flex-wrap:wrap;
+
 
 }
 .business{
-  width: 50%;
+  background: #999999;
+  width: 45%;
+  margin: 2%;
+  border: #c7def1;
+  border-radius: 10px;
+
 }
 .avatar{
   width: 50%;

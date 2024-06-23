@@ -28,6 +28,17 @@ export const getProductInfo=async (bid:any)=>{
         }
     }))
 }
+export const getProductInfoByType=async (data:any)=>{
+    console.log(data)
+    return (await request({
+        url: 'getProductListByType',
+        method: 'get',
+        params:{
+            bid:data.Bid,
+            type:data.type
+        }
+    }))}
+
 export const getBusinessInfo=async ()=>{
     return (await request({
         url:'BusinessInfoByUid',
