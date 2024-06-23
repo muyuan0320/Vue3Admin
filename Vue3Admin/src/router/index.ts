@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory, type RouteRecordRaw} from 'vue-router'
-import {userStore, useUserStoreHook} from "@/stores/modules/users";
+import { useUserStoreHook} from "@/stores/modules/users";
 import {usePermissionStoreHook} from "@/stores/modules/permission";
 import {getToken} from "@/utils/cache/cookies";
 import {ElMessage} from "element-plus";
