@@ -265,7 +265,6 @@ if (await isAdmin(req)) {
 })
 app.get('/getBusinessInfoByBid', async (req,res)=>{
     try{
-
       const result= ( await businessInfo(req.query.Bid))
         res.jsonp(result)
     }
@@ -311,6 +310,65 @@ app.post('/SubmitOrder',async (req,res)=>{
         res.jsonp({
             code:408,
             msg:'提交失败'
+        })
+    }
+})
+app.get('/getOrderListByUid',async (req,res)=>{
+    try{
+        const data={
+            Uid:getInfo(req).Uid
+        }
+       res.jsonp(( await order.getOrderInfoByUid(data)))
+    }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'获取失败'
+        })
+    }
+
+})
+app.get('/getOrderListByBid',async (req,res)=>{
+    try{
+        const data={
+            Bid:req.query.Bid
+        }
+       res.jsonp(( await order.getOrderInfoByBid(data)))
+    }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'获取失败'
+        })
+    }
+
+})
+app.get('/getOrderListByStatus',async (req,res)=>{
+    try{
+        const data={
+            Uid:getInfo(req).Uid,
+            status:req.query.status
+        }
+       res.jsonp(( await order.getOrderInfoByStatus(data)))
+    }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'获取失败'
+        })
+    }
+})
+app.post('/finnishOrder',async (req,res)=>{
+    try{
+
+
+
+        await order.finnishOrder(req.body.Oid)
+        res.jsonp({
+            code:200,
+            msg:'修改成功'
+        })
+    }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'修改失败'
         })
     }
 })
