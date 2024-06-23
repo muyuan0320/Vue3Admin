@@ -1,27 +1,56 @@
 <script setup lang="ts">
-import {ref, onMounted, watch} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import {ref, onMounted} from "vue";
+import { useRoute} from "vue-router";
 import {getProductInfo, getProductInfoByType} from "@/serve/InfoGet/InfoGet";
 import { getBusinessInfoByBid } from "@/serve/Business/business";
-import {ElLoading} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 import ProductComponet from "@/components/ProductComponet.vue";
+import {SubmitOrder} from "@/serve/Order/order";
 const typeList = ref<string[]>([]);
 const productInfo = ref<any[any]>([]);
 const bid = ref(useRoute().params.bid);
 const choice = ref("全部");
 const totalValue = ref(0);
-
+const OrderList=ref<any>({
+  Bid:bid.value,
+  ProductList:[]
+})
+const handleSubmit = async () => {
+  const res=await SubmitOrder(OrderList.value);
+  ElMessage.success(res.data.msg);
+};
 const handleUpdateItem = (payload:any) => {
   const { Pid, Action } = payload;
   const product = productInfo.value.find((item:any) => item.Pid === Pid);
   if (product) {
     if (Action === 'increment') {
       product.Pnum++;
-    } else if (Action === 'decrement') {
-      product.Pnum = Math.max(product.Pnum - 1, 0); // 防止数量为负
+      totalValue.value = totalValue.value + product.Pprice;
+      if (product.Pnum == 1) {
+        OrderList.value.ProductList.push({
+          Pid: product.Pid,
+          count: product.Pnum
+        })
+      }
+      else {
+
+        OrderList.value.ProductList.find((item: any) => item.Pid == product.Pid).count = product.Pnum;
+      }
     }
-  }
-  updateTotalValue()
+    else if (Action === 'decrement') {
+      product.Pnum = Math.max(product.Pnum - 1, 0);
+      totalValue.value = totalValue.value - product.Pprice;
+    if(totalValue.value<0) totalValue.value=0;
+
+      if (product.Pnum == 0){
+        OrderList.value.ProductList = OrderList.value.ProductList.filter((item: any) => item.Pid !== Pid);
+      }
+      else {
+        OrderList.value.ProductList.find((item: any) => item.Pid == product.Pid).count=product.Pnum;}
+      }
+
+    }
+
 };
 const handleChange=async()=>{
   if(choice.value=="全部"){
@@ -55,16 +84,9 @@ onMounted(async () => {
   productInfo.value = (await getProductInfo(bid.value)).data.results
   typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
   instance.close()
-  updateTotalValue();
+
 });
 
-const updateTotalValue = () => {
-  let total = 0;
-  for (let item of productInfo.value) {
-    total += item.Pprice * item.Pnum;
-  }
-  totalValue.value = total;
-};
 
 </script>
 
@@ -83,7 +105,7 @@ const updateTotalValue = () => {
     <div class="buttonBar">
       <div class="total">合计: <p class="totalPrice"> &yen{{ totalValue }}</p></div>
       <div class="submitButton">
-      <el-button round type="primary" size="large">提交订单</el-button>
+      <el-button round type="primary" size="large" @click="handleSubmit">提交订单</el-button>
       </div>
 
     </div>

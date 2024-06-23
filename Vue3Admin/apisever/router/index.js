@@ -12,8 +12,25 @@ const product = require("../serve/product/product");
 const todo = require("../serve/todo/todo");
 const {findPermissionByUsername, userExist} = require("../utils/mysql");
 const business = require("../serve/business/business");
+const order = require("../serve/order/order");
 const admin =require("../serve/admin/admin");
 const {businessInfo} = require("../serve/business/business");
+const getLocalTimeForMysql = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (`0${now.getMonth() + 1}`).slice(-2);
+    const day = (`0${now.getDate()}`).slice(-2);
+    const hours = (`0${now.getHours()}`).slice(-2);
+    const minutes = (`0${now.getMinutes()}`).slice(-2);
+    const seconds = (`0${now.getSeconds()}`).slice(-2);
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+// 使用函数
+const mysqlFormattedTime = getLocalTimeForMysql();
+console.log("MySQL格式的时间:", mysqlFormattedTime);
+
 const getInfo = (req) => {
     return jwt.verify(req.headers.authorization.split(' ')[1], config.get('JWTConfig.secret'))
 }
@@ -271,6 +288,29 @@ app.get('/getProductListByType',async(req,res)=>{
         res.jsonp({
             code:408,
             msg:'获取失败'
+        })
+    }
+})
+app.post('/SubmitOrder',async (req,res)=>{
+    try{
+        const data={
+            Uid:getInfo(req).Uid,
+            Bid:req.body.Bid,
+            createTime:getLocalTimeForMysql()
+        }
+        const detailData={
+            PidList:req.body.ProductList,
+            Bid:req.body.Bid,
+        }
+        await order.writeOrder(data,detailData)
+        res.jsonp({
+            code:200,
+            msg:'提交成功'
+        })
+        }catch (err){
+        res.jsonp({
+            code:408,
+            msg:'提交失败'
         })
     }
 })
