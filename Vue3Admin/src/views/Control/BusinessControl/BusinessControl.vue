@@ -67,7 +67,7 @@ const handleAdd=()=>{
   title.value='创建商品'
 
 }
-const handleFinish = async (item)=>{
+const handleFinish = async (item:any)=>{
  const res=await  finnishOrder({Oid:item.Oid})
   ElMessage.success(res.data.message)
   const loadInstance=ElLoading.service({text:'加载中'})
@@ -185,7 +185,6 @@ const handleUpload=async(pragmas:UploadRequestOptions)=>{
         <el-card  class="OrderView">
              <div class="OrderFirst"><el-tag>订单号:{{item.Oid}}</el-tag>
                <el-tag>订单状态:{{item.status}}</el-tag></div>
-
             <el-table :data="item.ProuductList" border>
               <el-table-column prop="Pimg" label="产品图片">
                <template #default="scope">
@@ -212,7 +211,5 @@ display: flex;
   display:flex;
   flex-direction: column;
 }
-.block{
-  display: block;
-}
+
 </style>

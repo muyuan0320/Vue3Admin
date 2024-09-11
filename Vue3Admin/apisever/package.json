@@ -11,11 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
     "config": "^3.3.11",
     "express": "^4.19.2",
     "express-jwt": "^8.4.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.9.7",
-    "nanoid": "3.3.6"
+    "nanoid": "3.3.6",
+    "openai": "^4.53.1",
+    "serve": "^14.2.3"
   }
 }

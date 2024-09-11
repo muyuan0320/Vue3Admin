@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted} from "vue";
+import {ref, onMounted, watch} from "vue";
 import { useRoute} from "vue-router";
 import {getProductInfo, getProductInfoByType} from "@/serve/InfoGet/InfoGet";
 import { getBusinessInfoByBid } from "@/serve/Business/business";
@@ -19,39 +19,7 @@ const handleSubmit = async () => {
   const res=await SubmitOrder(OrderList.value);
   ElMessage.success(res.data.msg);
 };
-const handleUpdateItem = (payload:any) => {
-  const { Pid, Action } = payload;
-  const product = productInfo.value.find((item:any) => item.Pid === Pid);
-  if (product) {
-    if (Action === 'increment') {
-      product.Pnum++;
-      totalValue.value = totalValue.value + product.Pprice;
-      if (product.Pnum == 1) {
-        OrderList.value.ProductList.push({
-          Pid: product.Pid,
-          count: product.Pnum
-        })
-      }
-      else {
 
-        OrderList.value.ProductList.find((item: any) => item.Pid == product.Pid).count = product.Pnum;
-      }
-    }
-    else if (Action === 'decrement') {
-      product.Pnum = Math.max(product.Pnum - 1, 0);
-      totalValue.value = totalValue.value - product.Pprice;
-    if(totalValue.value<0) totalValue.value=0;
-
-      if (product.Pnum == 0){
-        OrderList.value.ProductList = OrderList.value.ProductList.filter((item: any) => item.Pid !== Pid);
-      }
-      else {
-        OrderList.value.ProductList.find((item: any) => item.Pid == product.Pid).count=product.Pnum;}
-      }
-
-    }
-
-};
 const handleChange=async()=>{
   if(choice.value=="全部"){
     await getAllProduct();
@@ -85,6 +53,15 @@ onMounted(async () => {
   typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
   instance.close()
 
+  watch(()=>productInfo,() => {
+    totalValue.value = 0;
+    for (let i = 0; i < productInfo.value.length; i++) {
+      if (productInfo.value[i]) {
+        totalValue.value += productInfo.value[i].Pprice * productInfo.value[i].Pnum;
+      }
+    }
+  },{deep:true} );
+
 });
 
 
@@ -95,10 +72,10 @@ onMounted(async () => {
    <div class="left">
      <el-tabs v-model="choice" @tab-change="handleChange" class="tabs" tab-position="left" :stretch="true">
        <el-tab-pane  label="全部" name="全部"  >
-        <ProductComponet @updateItem="handleUpdateItem" :productList="productInfo" />
+        <ProductComponet :productList="productInfo" />
        </el-tab-pane>
        <el-tab-pane :name="type" v-for="type in typeList" :key="type" :label="type" >
-         <ProductComponet  @updateItem="handleUpdateItem" :productList="productInfo"  />
+         <ProductComponet   :productList="productInfo"  />
        </el-tab-pane>
         </el-tabs>
     </div>

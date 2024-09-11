@@ -25,6 +25,7 @@ export const getOrderListByBid = async (data:any) => {
   }))
 }
 export const getOrderListByStatus = async (data:any) => {
+    console.log(data)
   return (await request({
     url: 'getOrderListByStatus',
     method: 'get',

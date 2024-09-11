@@ -42,6 +42,9 @@ const TokenErrorHandler = async (err, req, res, next) => {
         next(err);
     }
 }
+
+
+
 app.use(TokenErrorHandler)
 app.all('*', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
