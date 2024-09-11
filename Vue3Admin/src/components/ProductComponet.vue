@@ -1,11 +1,9 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
-const p=defineProps({
-  productList:ref<any[any]>
-})
-const emit = defineEmits(['updateItem']); // 定义自定义事件名
 
+
+const emit = defineEmits(['updateItem']); // 定义自定义事件名
+const ProductList = defineModel('productList')
 
 
 </script>
@@ -27,17 +25,17 @@ const emit = defineEmits(['updateItem']); // 定义自定义事件名
      <div class="price">&yen{{item?.Pprice}}</div>
         <div class="Num">
           <div class="reduceBnt">
-           <button class="button" @click="$emit('updateItem',{
-             Pid:item.Pid,
-             Action:'decrement'
-           })">-</button>
+           <button class="button" @click="()=>{
+             if(item.Pnum>=1){    item.Pnum--}
+           }">-</button>
           </div>
           <div class="choiceNum">{{item?.Pnum}}</div>
           <div class="addBnt">
-            <button class="button" @click="$emit('updateItem',{
-             Pid:item.Pid,
-             Action:'increment'
-           })">+</button>
+            <button class="button" @click="()=>{
+
+              item.Pnum++
+            }
+        ">+</button>
           </div>
         </div>
       </div>

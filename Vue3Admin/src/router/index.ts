@@ -16,6 +16,9 @@ export const constantRoutes :RouteRecordRaw[] =[
   },{
   path:'/login',
     component: ()=>import('@/views/login/login.vue')
+  },{
+  path:'/demo1',
+    component: ()=>import('@/views/Demo/audioVisualzationDemo.vue')
   }
 ]
 export  const dynamicRoutes :RouteRecordRaw[] =[
@@ -26,7 +29,8 @@ export  const dynamicRoutes :RouteRecordRaw[] =[
       title:'商家详情',
       roles:['Admin','Business','User']
     },
-  },  { component: ()=>import('@/views/mine/mine.vue'),
+  },  {
+  component: ()=>import('@/views/mine/mine.vue'),
     path:'/mine/:Uid?',
     name:'mine',
     meta:{
@@ -49,10 +53,27 @@ export  const dynamicRoutes :RouteRecordRaw[] =[
     meta:{
       title:'用户控制',
       roles:['Admin']
+    },},
+  {
+    component:()=>import('@/views/Control/FileControl/file.vue'),
+    path:'/file',
+    name:'file',
+    meta:{
+      title:'文件控制',
+      roles:['Admin','User']
     },
+
   },
+  {
+    component:()=>import("@/views/Demo/chatDemo.vue"),
+    path:'/chat',
+    name:'chat',
+    meta:{
+      title:'聊天界面',
+      roles:['Admin','Business','User']
+    },
 
-
+  }
 ]
 const router = createRouter({
   history:createWebHistory(),

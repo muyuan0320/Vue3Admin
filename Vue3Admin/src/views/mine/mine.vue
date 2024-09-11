@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" >
 import {getOrderListByStatus, getOrderListByUid} from "@/serve/Order/order";
 import {onMounted, ref} from "vue";
 import {ElLoading} from "element-plus";
@@ -11,10 +11,14 @@ instance.close()
 })
 const tabChange =async (name)=>{
   const instance= ElLoading.service({text:'加载中'})
-  if(name=='全部'){
+  if(name==='全部'){
     OrderList.value  = (await getOrderListByUid()).data
   }
- else OrderList.value  = (await getOrderListByStatus(name)).data
+ else {
+
+    OrderList.value = (
+        await getOrderListByStatus(name)).data
+  }
   instance.close()
 }
 
