@@ -1,135 +1,133 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { getProductInfo } from "@/serve/InfoGet/InfoGet";
+import {ref, onMounted, watch} from "vue";
+import { useRoute} from "vue-router";
+import {getProductInfo, getProductInfoByType} from "@/serve/InfoGet/InfoGet";
 import { getBusinessInfoByBid } from "@/serve/Business/business";
-import {ElLoading} from "element-plus";
-
+import {ElLoading, ElMessage} from "element-plus";
+import ProductComponet from "@/components/ProductComponet.vue";
+import {SubmitOrder} from "@/serve/Order/order";
 const typeList = ref<string[]>([]);
-const productInfo = ref<any>({});
+const productInfo = ref<any[any]>([]);
 const bid = ref(useRoute().params.bid);
-const router = useRouter();
-const isCollapsed = ref(false);
+const choice = ref("全部");
+const totalValue = ref(0);
+const OrderList=ref<any>({
+  Bid:bid.value,
+  ProductList:[]
+})
+const handleSubmit = async () => {
+  const res=await SubmitOrder(OrderList.value);
+  ElMessage.success(res.data.msg);
+};
 
+const handleChange=async()=>{
+  if(choice.value=="全部"){
+    await getAllProduct();
+  }else{
+    await updateProduct(choice.value)
+  }
+}
+const getAllProduct = async () => {
+  const instance = ElLoading.service({
+    text:'加载中'
+  })
+  productInfo.value = (await getProductInfo(bid.value)).data.results
+  instance.close()
+};
+const updateProduct = async (data: any) => {
+
+
+  const instance = ElLoading.service({
+    text:'加载中'
+  })
+  productInfo.value=(await getProductInfoByType({ Bid:bid.value,
+    type:data})).data.results
+
+  instance.close()
+};
 onMounted(async () => {
   const instance = ElLoading.service({
     text:'加载中'
   })
-  productInfo.value = (await getProductInfo(bid.value)).data.results;
+  productInfo.value = (await getProductInfo(bid.value)).data.results
   typeList.value = (await getBusinessInfoByBid(bid.value)).data.results[0].Typelist.split(",");
   instance.close()
+
+  watch(()=>productInfo,() => {
+    totalValue.value = 0;
+    for (let i = 0; i < productInfo.value.length; i++) {
+      if (productInfo.value[i]) {
+        totalValue.value += productInfo.value[i].Pprice * productInfo.value[i].Pnum;
+      }
+    }
+  },{deep:true} );
+
 });
 
-const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
 
-const goBack = () => {
-  router.back();
-};
 </script>
 
 <template>
   <div class="container">
-    <div class="sidebar" :class="{ collapsed: isCollapsed }">
-      <button class="toggle-button" @click="toggleCollapse">{{ isCollapsed ? '展开' : '收起' }}</button>
-      <nav v-if="!isCollapsed">
-        <ul>
-          <li v-for="type in typeList" :key="type">{{ type }}</li>
-        </ul>
-      </nav>
-      <button class="back-button" @click="goBack">Back</button>
+   <div class="left">
+     <el-tabs v-model="choice" @tab-change="handleChange" class="tabs" tab-position="left" :stretch="true">
+       <el-tab-pane  label="全部" name="全部"  >
+        <ProductComponet :productList="productInfo" />
+       </el-tab-pane>
+       <el-tab-pane :name="type" v-for="type in typeList" :key="type" :label="type" >
+         <ProductComponet   :productList="productInfo"  />
+       </el-tab-pane>
+        </el-tabs>
+    </div>
+    <div class="buttonBar">
+      <div class="total">合计: <p class="totalPrice"> &yen{{ totalValue }}</p></div>
+      <div class="submitButton">
+      <el-button round type="primary" size="large" @click="handleSubmit">提交订单</el-button>
+      </div>
+
+    </div>
     </div>
 
-    <div class="detail">
-      <div class="content">
-        <div class="left">
-          <!-- 左侧可固定内容 -->
-        </div>
-        <div class="right">
-          <div class="item" v-for="item in productInfo" :key="item.id">
-            <img class="img" :src="item.Pimg" alt="Product Image">
-            <div class="pname">{{ item.Pname }}</div>
-            <div class="Pprice">{{ item.Pprice }}</div>
-            <div class="type">{{ item.type }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <style scoped>
-.container {
+.totalPrice{
+  line-height: 35px;
+  font-size: 20px;
+  color: #e4393c;
+}
+.container{
+  height: 100%;
+}
+
+.tabs{
+  background: #fff;
+}
+
+.left{
+
+  min-height: 90vh;
+  display: block;
+flex-grow: 1}
+.total{display: flex;
+  margin-left: 50%;
+  margin-right: 10%;
+}
+.buttonBar{
+
+  float:right ;
+  position: fixed;
+  border-radius: 10px;
+  bottom: 0;
+  color: #666666;
+  line-height: 10vh;
+  height: 10vh;
+  right: 0;
+  left: 0;
   display: flex;
+  background: #e6e6e6;
+  z-index: 3;
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #f5f5f5;
-  transition: width 0.5s;
-}
 
-.collapsed {
-  width: 70px;
-}
-
-.detail {
-  flex: 1;
-  background-color: #f0f0f0;
-  padding: 20px;
-}
-
-.back-button,.toggle-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.content {
-  display: flex;
-  justify-content: space-between; /* 左右两侧水平分布 */
-  align-items: flex-start; /* 上下对齐方式 */
-  gap: 20px; /* 间隔 */
-}
-
-.left {
-  flex: 0 0 auto; /* 左侧固定宽度 */
-}
-
-.right {
-  flex: 1 1 auto; /* 右侧自适应宽度 */
-  display: flex;
-  flex-direction: column; /* 信息内容垂直排列 */
-}
-
-.item {
-  border: 2px solid #ccc;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #c7def1;
-  width: 100%; /* 宽度 100% */
-  margin-bottom: 20px; /* 底部间距 */
-}
-
-.img {
-  width: 100%;
-  max-width: 200px;
-}
-
-.pname {
-  font-weight: bold;
-}
-
-.Pprice {
-  color: #007bff;
-}
-
-.type {
-  margin-top: 5px;
-}
 </style>

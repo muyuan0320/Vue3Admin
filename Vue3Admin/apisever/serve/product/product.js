@@ -65,8 +65,18 @@ const removeProduct = async (data)=>{
         throw error
     }
 }
+const getProductListByType = async (data)=>{
+    try {
+        return await mysql.select('*','Product',`Bid=${data.Bid} and type='${data.type}'`)
+    }
+    catch (error) {
+        console.log(error)
+        throw error
+    }
+}
 module.exports={
     getProductListByBid,
     addProduct,
-    editProduct
+    editProduct,
+    getProductListByType
 }

@@ -30,22 +30,33 @@ onMounted(async()=>{
 
  </div>
     <div class="name">
-      <span>{{index.Bname}}</span>
+      <span class="Name">{{index.Bname}}</span>
     </div>
     <div class="desc">
-      <span>{{index.description}}</span>
+      <span class="desc"> {{index.description}}</span>
     </div>
  </div>
   </div>
 </template>
 
 <style scoped>
+
+.desc{
+  font-size: 12px;
+}
+.Name{
+  font-size: 18px ;
+}
 .menu{
   display: flex;
-
+  flex-wrap:wrap;
 }
 .business{
-  width: 50%;
+  background: #999999;
+  width: 45%;
+  margin: 2%;
+  border: #c7def1;
+  border-radius: 10px;
 }
 .avatar{
   width: 50%;

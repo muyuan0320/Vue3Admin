@@ -21,7 +21,7 @@ const menuRef = ref<any>();
 const isShow = ref(false);
 </script>
 <template>
-  <el-menu background-color="#29436e"
+  <el-menu background-color="#007BFF"
            class="menu"
   ref="menuRef">
     <el-menu-item class="logoBox">
@@ -112,7 +112,7 @@ const isShow = ref(false);
   display: block !important;
 }
 .font {
-  color: #999;
+  color: #f9f9f9;
   text-align: center;
 }
 
