@@ -20,6 +20,7 @@ const client = new OpenAi({
                 model: "qwen-max",
                 messages: history,
                 stream: true,
+
             }
         )
     }

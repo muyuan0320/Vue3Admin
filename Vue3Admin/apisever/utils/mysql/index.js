@@ -92,7 +92,7 @@ const selectUser = (username) => {
             });
     });
 };
-const regist=(data)=>{
+const register = (data) => {
  return    insertData('user',data)
 }
 const findPasswordByUsername= async (data)=>{
@@ -115,7 +115,7 @@ const findPermissionByUsername= async (data)=>{
 module.exports = {
     select,
     findPasswordByUsername,
-    regist,
+    register,
     insertData,
     selectUser,
     selectUserAll,

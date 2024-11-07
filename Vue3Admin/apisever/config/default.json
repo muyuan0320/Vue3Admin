@@ -1,11 +1,10 @@
 
 {
   "dbConfig": {
-
-    "host": "host",
-    "user": "user",
-    "password": "password",
-    "database": "databasename"
+    "host": "8.134.209.193",
+    "user": "root",
+    "password": "yanmo123",
+    "database": "vue3admin"
   },
   "JWTConfig": {
     "secret": "vueAdmin3",
